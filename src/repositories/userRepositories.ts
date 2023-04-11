@@ -1,53 +1,66 @@
-import connectionDb from "../config/database.js";
+import prisma from "config/database.js";
 import Session from "../protocols/Session.js";
 import { UserData, UserEntity } from "../protocols/User";
 import { QueryResult } from "pg";
 
 async function findByEmail(email: string): Promise<QueryResult<UserEntity>> {
-  return await connectionDb.query(
-  `    
-    SELECT * FROM users WHERE email=$1
-  `,
-    [email]
-  );
+  // return await connectionDb.query(
+  // `    
+  //   SELECT * FROM users WHERE email=$1
+  // `,
+  //   [email]
+  // );
 }
 
-async function create({ name, email, password }: UserData): Promise<void> {
-  await connectionDb.query(
-    `
-      INSERT INTO users (name, email, password)
-      VALUES ($1, $2, $3)
-    `,
-    [name, email, password]
-  );
+async function create({ name, email, password }: UserData): Promise<UserData> {
+  // await connectionDb.query(
+  //   `
+  //     INSERT INTO users (name, email, password)
+  //     VALUES ($1, $2, $3)
+  //   `,
+  //   [name, email, password]
+  // );
+  return prisma.users.create({
+    data: {
+      name,
+      email,
+      password
+    }
+  })
 }
 
-async function createSession({ token, userId }: Session): Promise<void> {
-  await connectionDb.query(
-    `
-      INSERT INTO sessions (token, "userId")
-      VALUES ($1, $2)
-    `,
-    [token, userId]
-  );
+async function createSession({ token, userId }: Session): Promise<Session> {
+  // await connectionDb.query(
+  //   `
+  //     INSERT INTO sessions (token, "userId")
+  //     VALUES ($1, $2)
+  //   `,
+  //   [token, userId]
+  // );
+  return prisma.sessions.create({
+    data: {
+      token,
+      userId
+    }
+  })
 }
 
 async function findSessionByToken(token: string): Promise<QueryResult<Session>> {
-  return await connectionDb.query(
-    `
-      SELECT * FROM sessions WHERE token = $1
-    `,
-    [token]
-  );
+  // return await connectionDb.query(
+  //   `
+  //     SELECT * FROM sessions WHERE token = $1
+  //   `,
+  //   [token]
+  // );
 }
 
 async function findById(id: number): Promise<QueryResult<UserEntity>> {
-  return await connectionDb.query(
-    `    
-      SELECT * FROM users WHERE id=$1
-    `,
-    [id]
-  );
+  // return await connectionDb.query(
+  //   `    
+  //     SELECT * FROM users WHERE id=$1
+  //   `,
+  //   [id]
+  // );
 }
 
 export default {
